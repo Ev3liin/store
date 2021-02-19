@@ -1,13 +1,28 @@
 <template>
   <div class="dropdown">
-    <button @click.self="handleDropdown" class="dropbtn">Cart</button>
+    <button @click.self="handleDropdown" class="dropbtn">
+      {{ cartItemCount }} Cart
+    </button>
     <div v-if="isDropdown">
-      <div class="dropdown-content">
-        <h4>Title</h4>
-        <button class="btn removebtn">remove</button>
-        <div class="totalarea">
-          <span class="totalProce">Total price: $23</span>
-          <button class="btn clearbtn">Clear Cart</button>
+      <div>
+        <div class="dropdown-content">
+          <div v-for="item in cart" :key="item.product.id">
+            <h4>{{ item.product.title }}</h4>
+            <p>{{ item.quantity }} x ${{ item.product.price }}</p>
+            <button
+              @click.prevent="removeProductFromCart(item.product)"
+              class="btn removebtn"
+            >
+              remove
+            </button>
+            <hr />
+          </div>
+          <div class="totalarea">
+            <span class="totalProce">Total price: ${{ cartTotalPrice }}</span>
+            <button @click.prevent="clearCartItems" class="btn clearbtn">
+              Clear Cart
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -15,6 +30,7 @@
 </template>
 
 <script>
+import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -25,6 +41,24 @@ export default {
     handleDropdown() {
       this.isDropdown = !this.isDropdown
     },
+    // removeProductFromCart(product) {
+    //   this.$store.dispatch('removeProductFromCart', product)
+    // },
+    // clearCartItems() {
+    //   this.$store.dispatch('clearCartItems')
+    // },
+    ...mapActions('products', ['removeProductFromCart', 'clearCartItems']),
+  },
+  computed: {
+    ...mapState({
+      cart: state => state.products.cart,
+      // ['products/cart']
+    }),
+    ...mapGetters('products', ['cartItemCount', 'cartTotalPrice']),
+    // ...mapGetters({
+    //   cartItemCount: 'cartItemCount',
+    //   cartTotalPrice: 'cartTotalPrice',
+    // }),
   },
 }
 </script>
