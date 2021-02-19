@@ -7,16 +7,25 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex'
 import SingleProduct from './SingleProduct'
 export default {
   components: { SingleProduct },
   computed: {
-    products() {
-      return this.$store.state.products
-    },
+    // products() {
+    //   return this.$store.state.products
+    // },
+    ...mapState({
+      products: state => state.products.products,
+      // ['products/products']
+    }),
   },
   mounted() {
-    this.$store.dispatch('getProducts')
+    // this.$store.dispatch('getProducts')
+    this.getProducts()
+  },
+  methods: {
+    ...mapActions('products', ['getProducts']),
   },
 }
 </script>
